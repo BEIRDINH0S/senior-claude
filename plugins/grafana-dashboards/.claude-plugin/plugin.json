@@ -1,0 +1,10 @@
+{
+  "name": "grafana-dashboards",
+  "version": "0.1.0",
+  "description": "Dashboards Grafana qui servent au diagnostic : hiérarchie avec drill-down, bandeau de santé et onglets (schéma v2), RED/USE, boucle alerte → runbook → dashboard → logs, GitOps par le sidecar. Linter de JSON, conception et revue.",
+  "author": { "name": "BEIRDINH0S", "url": "https://github.com/BEIRDINH0S" },
+  "homepage": "https://github.com/BEIRDINH0S/senior-claude/tree/main/plugins/grafana-dashboards",
+  "repository": "https://github.com/BEIRDINH0S/senior-claude",
+  "license": "MIT",
+  "keywords": ["grafana", "dashboards", "prometheus", "promql", "observability", "sre", "kubernetes", "gitops", "runbooks"]
+}

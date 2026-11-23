@@ -17,6 +17,12 @@
       "source": "./plugins/kube-logs",
       "description": "Logs sur Kubernetes : JSON sur stdout, Alloy, Loki, Grafana. Audit, mise en place et requêtes LogQL.",
       "category": "devops"
+    },
+    {
+      "name": "grafana-dashboards",
+      "source": "./plugins/grafana-dashboards",
+      "description": "Dashboards Grafana pour diagnostiquer : bandeau de santé + onglets, RED/USE, liens vers runbooks et logs, linter de JSON, GitOps.",
+      "category": "devops"
     }
   ]
 }
