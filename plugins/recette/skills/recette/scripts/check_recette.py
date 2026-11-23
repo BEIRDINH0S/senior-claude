@@ -25,16 +25,18 @@ from urllib.parse import unquote
 
 ERREUR, AVERT, INFO = "ERREUR", "AVERTISSEMENT", "INFO"
 PRIORITES = {"haute", "moyenne", "basse"}
-TYPES = {"fonctionnel", "non-regression", "securite", "performance", "technique"}
+TYPES = {"fonctionnel", "non-regression", "securite", "performance", "utilisabilite", "compatibilite",
+         "fiabilite", "exploitation", "reglementaire", "exploratoire", "technique"}
 SEVERITES = {"bloquante", "majeure", "mineure"}
-STATUTS_ANO = {"ouverte", "en correction", "corrigee", "fermee", "rejetee"}
-ANO_FERMEES = {"fermee", "rejetee"}
+STATUTS_ANO = {"ouverte", "differee", "en correction", "corrigee", "reouverte", "fermee", "rejetee", "doublon"}
+ANO_FERMEES = {"fermee", "rejetee", "doublon"}
 STATUTS_EXEC = {"ok", "ko", "bloque", "non execute"}
 STRAT_SECTIONS = [("perimetre", "Périmètre"), ("hors perimetre", "Hors périmètre"), ("environnement", "Environnement"),
                   ("donnees", "Données de test"), ("roles", "Rôles"), ("criteres d'entree", "Critères d'entrée"),
                   ("criteres de sortie", "Critères de sortie")]
 DEFAULT_CRITERES = {"go_bloquantes_max": 0, "go_majeures_max": 0, "go_taux_reussite_min": 95,
-                    "go_priorite_haute_executee": 100}
+                    "go_priorite_haute_executee": 100, "go_couverture_exigences_min": 100}
+RISQUES = {"haut", "moyen", "bas"}
 VAGUE_RE = re.compile(
     r"^(ok|ras|ca marche|ca fonctionne|fonctionne( bien| correctement)?|tout fonctionne|correct(ement)?|"
     r"conforme|bien|valide|c'est bon|pas d'erreur|aucune erreur|comme prevu|comme attendu|resultat attendu|"
@@ -153,6 +155,8 @@ def load(root: Path, rep: Report):
         for key, label in STRAT_SECTIONS:
             if not any(key in h for h in heads):
                 rep.add(ERREUR, "STRAT-SECTION", f"section « {label} » absente", "strategie.md")
+        if not any("risque" in h for h in heads):
+            rep.add(AVERT, "STRAT-RISQUES", "pas de section « Risques produit » : la priorité et l'effort de test se fondent sur les risques", "strategie.md")
         for k, default in DEFAULT_CRITERES.items():
             if k in meta:
                 try:
@@ -190,6 +194,8 @@ def load(root: Path, rep: Report):
     an = root / "anomalies.md"
     if an.is_file():
         for t in tables(read(an)):
+            if t and not any(k.startswith("priorite") for k in t[0]):
+                rep.add(AVERT, "ANO-PRIORITE", "pas de colonne Priorité : la sévérité (impact) et la priorité (urgence de correction) sont deux champs distincts", "anomalies.md")
             for row in t:
                 aid = col(row, "id")
                 if not re.match(r"^AN-\d+", aid):
@@ -199,9 +205,27 @@ def load(root: Path, rep: Report):
                     rep.add(ERREUR, "ANO-SEVERITE", f"{aid} : sévérité « {col(row, 'severite')} » (bloquante, majeure, mineure)", "anomalies.md")
                 if st not in STATUTS_ANO:
                     rep.add(ERREUR, "ANO-STATUT", f"{aid} : statut « {col(row, 'statut')} »", "anomalies.md")
+                pr = norm(col(row, "priorite"))
+                if any(k.startswith("priorite") for k in row) and pr and pr not in PRIORITES:
+                    rep.add(ERREUR, "ANO-PRIORITE", f"{aid} : priorité « {col(row, 'priorite')} » (haute, moyenne, basse)", "anomalies.md")
                 data["anomalies"][aid] = {"titre": col(row, "titre"), "severite": sev, "statut": st,
                                           "cas": split_list(col(row, "cas")), "echeance": col(row, "echeance"),
                                           "ticket": col(row, "ticket")}
+    at = root / "a-tester.md"
+    data["a_tester"] = []
+    if at.is_file():
+        for t in tables(read(at)):
+            for row in t:
+                if not re.match(r"\d{4}-\d{2}-\d{2}", col(row, "date")):
+                    continue
+                cas = re.findall(r"CT-\d+", col(row, "cas"))
+                excl = "hors" in norm(col(row, "cas")) or "sans impact" in norm(col(row, "cas"))
+                risque = norm(col(row, "risque"))
+                if risque and risque not in RISQUES:
+                    rep.add(AVERT, "A-TESTER-RISQUE", f"{col(row, 'date')} « {col(row, 'changement')[:40]} » : risque « {col(row, 'risque')} » (haut, moyen, bas)", "a-tester.md")
+                data["a_tester"].append({"date": col(row, "date"), "changement": col(row, "changement"),
+                                         "verifier": col(row, "a verifier", "verifier"), "risque": risque,
+                                         "cas": cas, "exclu": excl, "ref": col(row, "ref")})
     return data
 
 
@@ -221,6 +245,17 @@ def load_case(p: Path, root: Path, data: dict, rep: Report):
         rep.add(AVERT, "CAS-CHAMP", f"type « {meta['type']} » ({', '.join(sorted(TYPES))})", rel)
     exigs = split_list(meta.get("exigences", ""))
     heads = headings(body)
+    if norm(meta.get("type", "")) == "exploratoire":
+        # Session exploratoire : une charte (but, cible, durée, profil) au lieu d'étapes scriptées.
+        if not any("charte" in h for h in heads):
+            rep.add(ERREUR, "CAS-SECTION", "session exploratoire sans section « Charte » (but, cible, durée, profil d'utilisateur)", rel)
+        else:
+            ch = norm(section(body, "charte"))
+            for k, label in (("but", "but"), ("duree", "durée")):
+                if k not in ch:
+                    rep.add(AVERT, "CAS-CHARTE", f"charte sans « {label} »", rel)
+        data["cas"][cid] = {"titre": meta.get("titre", ""), "exigences": exigs, "priorite": prio, "fichier": rel}
+        return
     for key, label in (("precondition", "Préconditions"), ("donnees", "Données"), ("etapes", "Étapes")):
         if not any(key in h for h in heads):
             rep.add(ERREUR, "CAS-SECTION", f"section « {label} » absente", rel)
@@ -252,6 +287,12 @@ def check_links(data: dict, rep: Report):
     for e in data["exigences"]:
         if e not in covered:
             rep.add(ERREUR, "EXIGENCE-NON-COUVERTE", f"{e} n'est couverte par aucun cas", "exigences.md")
+    for e in data.get("a_tester", []):
+        for c in e["cas"]:
+            if c not in data["cas"]:
+                rep.add(ERREUR, "A-TESTER-CAS-INCONNU", f"{e['date']} « {e['changement'][:40]} » renvoie à {c}, cas inexistant", "a-tester.md")
+        if not e["cas"] and not e["exclu"]:
+            rep.add(AVERT, "A-TESTER-NON-TRAITE", f"{e['date']} « {e['changement'][:50]} » : pas encore transformé en cas de test", "a-tester.md")
     for aid, a in data["anomalies"].items():
         for c in a["cas"]:
             if c not in data["cas"]:
@@ -322,11 +363,13 @@ def decide(camp: dict, data: dict) -> dict:
     by_sev = {s: sorted(a for a, x in opened.items() if x["severite"] == s) for s in SEVERITES}
     covered = {e for c in ex if c in data["cas"] for e in data["cas"][c]["exigences"]
                if ex[c] in ("ok", "ko")}
+    cov_pct = 100.0 * len(covered) / len(data["exigences"]) if data["exigences"] else 100.0
     crit = [
         ("Anomalies bloquantes ouvertes", f"≤ {cr['go_bloquantes_max']:g}", len(by_sev["bloquante"]), len(by_sev["bloquante"]) <= cr["go_bloquantes_max"]),
         ("Anomalies majeures ouvertes", f"≤ {cr['go_majeures_max']:g}", len(by_sev["majeure"]), len(by_sev["majeure"]) <= cr["go_majeures_max"]),
         ("Taux de réussite des cas exécutés", f"≥ {cr['go_taux_reussite_min']:g} %", f"{taux:.1f} %", taux >= cr["go_taux_reussite_min"]),
         ("Cas de priorité haute exécutés", f"≥ {cr['go_priorite_haute_executee']:g} %", f"{taux_haute:.0f} % ({len(hautes_exec)}/{len(hautes)})", taux_haute >= cr["go_priorite_haute_executee"]),
+        ("Exigences couvertes par un cas exécuté", f"≥ {cr['go_couverture_exigences_min']:g} %", f"{cov_pct:.0f} % ({len(covered)}/{len(data['exigences'])})", cov_pct >= cr["go_couverture_exigences_min"]),
     ]
     if not all(c[3] for c in crit):
         decision = "NO-GO"
@@ -334,7 +377,8 @@ def decide(camp: dict, data: dict) -> dict:
         decision = "GO AVEC RÉSERVES"
     else:
         decision = "GO"
-    return {"n": n, "executes": executed, "taux": taux, "taux_haute": taux_haute, "ouvertes": opened,
+    non_traites = [e for e in data.get("a_tester", []) if not e["cas"] and not e["exclu"]]
+    return {"non_traites": non_traites, "n": n, "executes": executed, "taux": taux, "taux_haute": taux_haute, "ouvertes": opened,
             "par_severite": by_sev, "criteres": crit, "decision": decision,
             "couverture": (len(covered), len(data["exigences"]))}
 
@@ -376,11 +420,25 @@ def pv_markdown(camp: dict, data: dict, d: dict, today: str) -> str:
             L.append(f"- **{a}** ({x['severite']}) : {x['titre']}. Échéance : {x['echeance'] or '**à fixer**'}.")
     else:
         L.append("Sans objet." if d["decision"] == "GO" else "Sans objet tant que la décision est NO-GO.")
+    if d["non_traites"]:
+        L += ["", "## Changements sans cas de test", "",
+              "Ces changements notés pendant le développement (`a-tester.md`) n'ont pas été transformés en cas : ils n'ont pas été recettés.", ""]
+        for e in d["non_traites"]:
+            L.append(f"- {e['date']} : {e['changement']} (risque : {e['risque'] or 'non évalué'})")
+    L += ["", "## Écarts par rapport au plan", "", "> Planning, durée, effort, périmètre : ce qui a différé de la stratégie, et pourquoi.", "",
+          "## Obstacles et contournements", "", "> Environnement indisponible, données manquantes, anomalies bloquant d'autres cas…", "",
+          "## Risques résiduels", "",
+          "> Ce qui part en production sans avoir été vérifié (cas non exécutés, hors périmètre, réserves) et son impact possible.", ""]
+    if d["n"]["non execute"] or d["n"]["bloque"]:
+        L.append(f"- {d['n']['non execute']} cas non exécuté(s) et {d['n']['bloque']} bloqué(s) : voir la campagne.")
+        L.append("")
+    L += ["## Enseignements", "", "> Ce qui a bien ou mal marché dans cette recette, à reprendre ou à changer la prochaine fois.", ""]
     L += ["", "## Décision", "",
           f"**Décision proposée par les critères : {d['decision']}**", "",
           "Décision prise :", "",
           "- [ ] GO sans réserve",
-          "- [ ] GO avec réserves (liste ci-dessus)",
+          "- [ ] GO avec réserves (liste ci-dessus ; contournements communiqués aux utilisateurs et au support)",
+          "- [ ] GO partiel : fonctionnalité(s) désactivée(s) ou exclue(s) du déploiement : …",
           "- [ ] NO-GO",
           "", "Justification (obligatoire si la décision prise diffère de la proposition) :", "", "> ", "",
           "## Prérequis de mise en production", "",

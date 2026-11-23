@@ -1,0 +1,17 @@
+{
+  "description": "Au fil du développement : un commit de code applicatif doit dire ce qu'il faudra vérifier en recette (recette/a-tester.md) ou pourquoi il est sans impact.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/recette_gate.py\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

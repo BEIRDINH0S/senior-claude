@@ -39,7 +39,9 @@ Tu présentes la proposition et ses raisons, sans plaider pour un go. Si l'utili
 python3 <dossier de ce skill>/../recette/scripts/check_recette.py recette/ --campagne <nom> --pv
 ```
 - Il écrit `pv.md` dans le dossier de la campagne. S'il existe déjà, il écrit `pv.proposition.md` : un PV en cours de signature n'est jamais écrasé.
-- Relis le PV généré. Ajoute si besoin un paragraphe « Points d'attention » : contournements à communiquer au support, fonctionnalités désactivées, risques connus.
+- Relis le PV généré et **complète avec l'équipe** les rubriques du rapport de fin de recette que le script ne peut pas deviner : **écarts par rapport au plan**, **obstacles et contournements**, **risques résiduels** (dont les « changements sans cas de test » issus d'`a-tester.md`), **enseignements**. Écris sans jargon technique : le lecteur est le métier.
+- **Les contournements des réserves** sont à communiquer aux utilisateurs et au support : liste-les explicitement.
+- **Si un risque important est isolé dans une fonctionnalité**, rappelle l'option « GO partiel » : déployer en excluant ou en désactivant cette fonctionnalité.
 - **Les cases de décision et les signatures restent vides** : c'est au métier de les remplir. Ne coche rien à sa place.
 - Les prérequis de MEP : si le repo suit le plugin **ops-doc**, renvoie vers `docs/checklist-production.md` et `docs/procedures/deploiement-rollback.md`.
 - Export pour signature, si demandé : `pandoc pv.md -o PV-recette-vX.Y.Z.docx` (ou `.pdf`), avec le modèle du client s'il en impose un.

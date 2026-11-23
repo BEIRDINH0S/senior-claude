@@ -1,0 +1,7 @@
+Session exploratoire CT-007 — 2026-11-25 10:00-10:45 — Camille R. + secrétaire du cabinet — build 1.4.0-rc3
+10:04 double clic rapide sur Valider : un seul rendez-vous créé (OK)
+10:11 deux onglets, même créneau 15:30 : le 2e reçoit « Ce créneau vient d'être réservé » (OK)
+10:23 modification d'un rendez-vous vers un créneau pris : refusée avec message clair (OK)
+10:31 motif de 120 caractères : tronqué sans infobulle dans la liste -> AN-002 (déjà ouverte)
+10:40 retour arrière du navigateur après validation : pas de doublon (OK)
+Bilan : aucune double réservation obtenue ; 1 constat mineur déjà connu.

@@ -15,6 +15,8 @@ fin: 2026-11-25
 | CT-004 | KO | Camille R. | 2026-11-24 | AN-001 | [capture](preuves/CT-004-annulation.png) · [journal SMS](preuves/CT-004-sms-log.txt) |
 | CT-005 | OK | Camille R. | 2026-11-24 | | [journal SMS](preuves/CT-005-rappels.txt) |
 | CT-006 | non exécuté | | | | |
+| CT-007 | OK | Camille R. + secrétariat | 2026-11-25 | AN-002 | [notes de session](preuves/CT-007-session.txt) |
+| CT-008 | OK | Camille R. | 2026-11-25 | | [journal de restauration](preuves/CT-008-restauration.txt) |
 
 ## Notes
 - CT-006 (priorité basse) reporté : environnement indisponible pour le téléchargement le 25/11 ; à exécuter dans la campagne 1.4.1.

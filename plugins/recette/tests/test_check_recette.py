@@ -71,7 +71,7 @@ class Mutations(unittest.TestCase):
         self.assertIn("CAS-ATTENDU-VIDE", codes(res))
 
     def test_exigence_non_couverte(self):
-        self.edit("exigences.md", "| EX-005 |", "| EX-006 | Nouvelle exigence | haute | US-40 |\n| EX-005 |")
+        self.edit("exigences.md", "| EX-005 |", "| EX-009 | Nouvelle exigence | critère | haute | US-40 |\n| EX-005 |")
         self.assertIn("EXIGENCE-NON-COUVERTE", codes(run(self.d)[1]))
 
     def test_exigence_inconnue(self):
@@ -99,19 +99,19 @@ class Mutations(unittest.TestCase):
         self.assertIn("CAMP-ANOMALIE-INCONNUE", c)
 
     def test_statuts_invalides(self):
-        self.edit("anomalies.md", "| majeure | CT-004 |", "| critique | CT-004 |")
+        self.edit("anomalies.md", "| majeure | haute | CT-004 |", "| critique | haute | CT-004 |")
         self.edit(f"{CAMP}/campagne.md", "| CT-005 | OK |", "| CT-005 | passé |")
         c = codes(run(self.d)[1])
         self.assertIn("ANO-SEVERITE", c)
         self.assertIn("CAMP-STATUT", c)
 
     def test_bloquante_ouverte_no_go(self):
-        self.edit("anomalies.md", "| bloquante | CT-002 | fermée |", "| bloquante | CT-002 | corrigée |")
+        self.edit("anomalies.md", "| bloquante | haute | CT-002 | fermée |", "| bloquante | haute | CT-002 | corrigée |")
         res = run(self.d)[1]
         self.assertEqual(res["decision"], "NO-GO")
 
     def test_trop_de_majeures_no_go(self):
-        self.edit("anomalies.md", "| mineure | CT-003 |", "| majeure | CT-003 |")
+        self.edit("anomalies.md", "| mineure | basse | CT-003 |", "| majeure | basse | CT-003 |")
         self.assertEqual(run(self.d)[1]["decision"], "NO-GO")
 
     def test_haute_non_executee_no_go(self):
@@ -142,6 +142,62 @@ class Mutations(unittest.TestCase):
         code, res = run(self.d, "--campagne", "2026-11-24-v1.4.0", "--pv")
         self.assertTrue(res["pv"].endswith("pv.proposition.md"))
         self.assertIn("Mme Dupuis", (self.d / CAMP / "pv.md").read_text())
+
+
+class ReglesSyllabus(unittest.TestCase):
+    """Règles ajoutées d'après les syllabus ISTQB (CTFL v4.0, Tests d'acceptation 2019)."""
+
+    def setUp(self):
+        self.d = Path(tempfile.mkdtemp()) / "recette"
+        shutil.copytree(EXEMPLE, self.d)
+        (self.d / CAMP / "pv.md").unlink()
+
+    def tearDown(self):
+        shutil.rmtree(self.d.parent)
+
+    def edit(self, rel, old, new):
+        p = self.d / rel
+        s = p.read_text()
+        self.assertIn(old, s)
+        p.write_text(s.replace(old, new, 1))
+
+    def test_risques_produit_attendus(self):
+        self.edit("strategie.md", "## Risques produit", "## Divers")
+        self.assertIn("STRAT-RISQUES", codes(run(self.d)[1]))
+
+    def test_priorite_distincte_de_la_severite(self):
+        self.edit("anomalies.md", "| majeure | haute | CT-004 |", "| majeure | urgente | CT-004 |")
+        self.assertIn("ANO-PRIORITE", codes(run(self.d)[1]))
+
+    def test_couverture_exigences_no_go(self):
+        self.edit("strategie.md", "go_couverture_exigences_min: 80", "go_couverture_exigences_min: 100")
+        res = run(self.d)[1]
+        self.assertEqual(res["decision"], "NO-GO")
+
+    def test_session_exploratoire_sans_charte(self):
+        self.edit("cas/CT-007-exploratoire-creation.md", "## Charte", "## Notes")
+        self.assertIn("CAS-SECTION", codes(run(self.d)[1]))
+
+    def test_charte_sans_duree(self):
+        self.edit("cas/CT-007-exploratoire-creation.md", "- **Durée** : 45 minutes, en binôme (testeur + secrétaire du cabinet).", "")
+        self.assertIn("CAS-CHARTE", codes(run(self.d)[1]))
+
+    def test_a_tester_non_traite_et_dans_le_pv(self):
+        self.edit("a-tester.md", "| bas | hors recette : sans impact fonctionnel |", "| bas | |")
+        c = codes(run(self.d)[1])
+        self.assertIn("A-TESTER-NON-TRAITE", c)
+        run(self.d, "--campagne", "2026-11-24-v1.4.0", "--pv")
+        self.assertIn("Changements sans cas de test", (self.d / CAMP / "pv.md").read_text())
+
+    def test_a_tester_cas_inconnu(self):
+        self.edit("a-tester.md", "| CT-008 |", "| CT-099 |")
+        self.assertIn("A-TESTER-CAS-INCONNU", codes(run(self.d)[1]))
+
+    def test_pv_contient_le_rapport_de_fin(self):
+        run(self.d, "--campagne", "2026-11-24-v1.4.0", "--pv")
+        pv = (self.d / CAMP / "pv.md").read_text()
+        for titre in ("Écarts par rapport au plan", "Obstacles et contournements", "Risques résiduels", "Enseignements", "GO partiel"):
+            self.assertIn(titre, pv)
 
 
 if __name__ == "__main__":

@@ -39,21 +39,25 @@ Pour chaque cas, de priorité haute d'abord :
 
 Si le cas lui-même est faux (attendu impossible, étape ambiguë), **ne l'adapte pas en silence**. Note-le, signale-le à l'utilisateur, corrige le cas avec son accord, puis rejoue-le.
 
+Une **session exploratoire** (`type: exploratoire`) se joue en respectant sa charte et sa durée. Note les constats horodatés dans la section Constats du cas et dans un fichier de preuve. Ouvre une anomalie par écart.
+
 ## 2. Ouvrir une anomalie (`recette/anomalies.md`)
 
 - Un titre qui dit **ce qui ne va pas**, pas ce qu'on a fait : « Annulation : le SMS n'est pas envoyé ».
-- **La sévérité selon l'impact métier** (standard, section 8). Elle n'a rien à voir avec la difficulté de correction. En cas de doute entre deux niveaux, propose et laisse le métier trancher.
+- **La sévérité selon l'impact métier**, et **la priorité selon l'urgence de correction** : ce sont deux champs distincts (standard, section 10). La sévérité n'a rien à voir avec la difficulté de correction. L'impact s'analyse avec le métier (quels processus, quelles règles sont touchés). En cas de doute, propose et laisse le métier trancher.
 - Le contournement, s'il en existe un : c'est ce qui sépare une majeure d'une bloquante.
 - Le cas concerné, le statut `ouverte`, une échéance si elle est connue, le ticket s'il existe. Pour créer le ticket, utilise le skill de l'outil de tickets, s'il y en a un, avec l'accord de l'utilisateur.
-- Dans la description du ticket : les étapes pour reproduire, l'attendu, l'obtenu, la version, la preuve.
+- Dans le ticket, le rapport complet : date et auteur, version et environnement, cas et données, étapes pour reproduire, attendu, obtenu, preuves (captures, logs), sévérité, priorité.
 
-## 3. Re-tester une correction
+## 3. Re-tester une correction (confirmation, puis régression)
 
 Quand une anomalie passe en `corrigée` : vérifie la nouvelle version déployée, **rejoue le cas en entier** (pas seulement l'étape fautive), avec une nouvelle preuve. Ensuite :
 - c'est bon : l'anomalie passe en `fermée`, et la ligne de campagne est mise à jour (version et date dans les notes) ;
 - c'est toujours KO : l'anomalie reste ouverte, avec un commentaire.
 
-Rejoue aussi les cas de priorité haute touchés par la correction : la non-régression.
+Rejoue aussi les cas choisis par **analyse d'impact** de la correction (régression), en commençant par la priorité haute.
+
+Pendant une campagne longue, donne un **point d'avancement** régulier : avancement, obstacles et contournements, métriques, risques nouveaux, suite prévue. Écris-le sans jargon technique, pour le métier.
 
 ## 4. Vérifier et rendre la main
 

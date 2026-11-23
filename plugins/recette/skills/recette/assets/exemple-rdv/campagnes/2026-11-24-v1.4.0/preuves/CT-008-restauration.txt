@@ -1,0 +1,5 @@
+2026-11-25 14:02 select count(*) from rendez_vous; -> 4812 (rdv-pg)
+2026-11-25 14:05 kubectl apply -f cluster-restore.yaml (recovery depuis la sauvegarde du 2026-11-25 03:00)
+2026-11-25 14:26 kubectl cnpg status rdv-pg-restore -> Cluster in healthy state (21 min)
+2026-11-25 14:27 select count(*) from rendez_vous; -> 4812 (rdv-pg-restore)
+2026-11-25 14:31 app de recette pointée sur rdv-pg-restore : agenda du 24/11 affiché, 12 rendez-vous, aucune erreur

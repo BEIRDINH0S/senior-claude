@@ -14,7 +14,7 @@
 
 | Cas prévus | OK | KO | Bloqués | Non exécutés | Taux de réussite | Exigences couvertes |
 |---|---|---|---|---|---|---|
-| 6 | 4 | 1 | 0 | 1 | 80.0 % | 4 / 5 |
+| 8 | 6 | 1 | 0 | 1 | 85.7 % | 5 / 6 |
 
 ## Critères de sortie
 
@@ -22,8 +22,9 @@
 |---|---|---|---|
 | Anomalies bloquantes ouvertes | ≤ 0 | 0 | oui |
 | Anomalies majeures ouvertes | ≤ 1 | 1 | oui |
-| Taux de réussite des cas exécutés | ≥ 80 % | 80.0 % | oui |
-| Cas de priorité haute exécutés | ≥ 100 % | 100 % (4/4) | oui |
+| Taux de réussite des cas exécutés | ≥ 80 % | 85.7 % | oui |
+| Cas de priorité haute exécutés | ≥ 100 % | 100 % (6/6) | oui |
+| Exigences couvertes par un cas exécuté | ≥ 80 % | 83 % (5/6) | oui |
 
 ## Anomalies ouvertes
 
@@ -39,6 +40,25 @@ En cas d'acceptation, les anomalies suivantes sont levées comme **réserves**, 
 - **AN-001** (majeure) : Annulation : le SMS n'est pas envoyé (aucune entrée dans le journal SMS) ; contournement : appel du patient par le secrétariat. Échéance : 2026-12-04.
 - **AN-002** (mineure) : Création : le motif long est tronqué sans infobulle dans la liste. Échéance : 2026-12-18.
 
+## Écarts par rapport au plan
+
+> Planning, durée, effort, périmètre : ce qui a différé de la stratégie, et pourquoi.
+
+## Obstacles et contournements
+
+> Environnement indisponible, données manquantes, anomalies bloquant d'autres cas…
+
+## Risques résiduels
+
+> Ce qui part en production sans avoir été vérifié (cas non exécutés, hors périmètre, réserves) et son impact possible.
+
+- 1 cas non exécuté(s) et 0 bloqué(s) : voir la campagne.
+
+## Enseignements
+
+> Ce qui a bien ou mal marché dans cette recette, à reprendre ou à changer la prochaine fois.
+
+
 ## Décision
 
 **Décision proposée par les critères : GO AVEC RÉSERVES**
@@ -46,7 +66,8 @@ En cas d'acceptation, les anomalies suivantes sont levées comme **réserves**, 
 Décision prise :
 
 - [ ] GO sans réserve
-- [ ] GO avec réserves (liste ci-dessus)
+- [ ] GO avec réserves (liste ci-dessus ; contournements communiqués aux utilisateurs et au support)
+- [ ] GO partiel : fonctionnalité(s) désactivée(s) ou exclue(s) du déploiement : …
 - [ ] NO-GO
 
 Justification (obligatoire si la décision prise diffère de la proposition) :
