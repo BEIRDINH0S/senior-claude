@@ -1,0 +1,16 @@
+discovery.relabel "pods" {
+  targets = discovery.kubernetes.pods.targets
+  rule {
+    source_labels = ["__meta_kubernetes_pod_name"]
+    target_label  = "pod"
+  }
+}
+loki.process "app" {
+  stage.json {
+    expressions = { level = "", user_id = "", trace_id = "" }
+  }
+  stage.labels {
+    values = { level = "", user_id = "", trace_id = "" }
+  }
+  forward_to = [loki.write.default.receiver]
+}

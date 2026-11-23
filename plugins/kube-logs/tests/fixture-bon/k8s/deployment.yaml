@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rdv-api
+spec:
+  template:
+    spec:
+      containers:
+        - name: api
+          image: rdv-api:1.0.0
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp

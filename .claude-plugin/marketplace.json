@@ -11,6 +11,12 @@
       "source": "./plugins/ops-doc",
       "description": "Créer, importer, vérifier et relire la doc d'exploitation d'une app Kubernetes, avec des hooks qui la gardent alignée sur les commits et pushs des agents.",
       "category": "devops"
+    },
+    {
+      "name": "kube-logs",
+      "source": "./plugins/kube-logs",
+      "description": "Logs sur Kubernetes : JSON sur stdout, Alloy, Loki, Grafana. Audit, mise en place et requêtes LogQL.",
+      "category": "devops"
     }
   ]
 }

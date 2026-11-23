@@ -1,0 +1,10 @@
+{
+  "name": "kube-logs",
+  "version": "0.1.0",
+  "description": "Logs d'une app Kubernetes avec Prometheus/Loki/Grafana : une ligne JSON sur stdout, la plateforme fait le reste. Audit, mise en place (Node/pino, Alloy, rétention Loki) et requêtes LogQL.",
+  "author": { "name": "BEIRDINH0S", "url": "https://github.com/BEIRDINH0S" },
+  "homepage": "https://github.com/BEIRDINH0S/senior-claude/tree/main/plugins/kube-logs",
+  "repository": "https://github.com/BEIRDINH0S/senior-claude",
+  "license": "MIT",
+  "keywords": ["logging", "kubernetes", "loki", "grafana", "alloy", "pino", "nodejs", "logql", "observability"]
+}

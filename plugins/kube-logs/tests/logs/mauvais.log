@@ -1,0 +1,14 @@
+> rdv-api@1.0.0 start
+> node dist/main.js
+{"level":30,"time":1763906531482,"pid":1,"hostname":"rdv-api-7d9f","msg":"server started"}
+{"level":"info","time":"2026-11-23T14:02:11.482Z","msg":"commande 1042 créée pour client 77"}
+{"level":"info","time":"2026-11-23T14:02:12.482Z","msg":"commande 1043 créée pour client 12"}
+{"level":"info","time":"2026-11-23T14:02:13.482Z","msg":"commande 1044 créée pour client 9"}
+{"level":"info","time":"2026-11-23T14:02:14.482Z","msg":"commande 1045 créée pour client 4"}
+{"level":"info","time":"2026-11-23T14:02:15.482Z","msg":"commande 1046 créée pour client 3"}
+{"level":"info","time":"2026-11-23T14:02:16.482Z","msg":"tentative de connexion","user":{"email":"jean.dupont@example.org","password":"hunter2hunter2"}}
+{"level":"info","time":"2026-11-23T14:02:17.482Z","msg":"appel sortant","req":{"headers":{"authorization":"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozjgNryP4J3jVmNHl0w5N_XgL0n3I9PlFUP0THsR8U"}}}
+{"level":"error","time":"2026-11-23T14:02:18.482Z","msg":"échec","err":"Error: timeout"}
+Error: connect ECONNREFUSED 10.0.0.12:5432
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1555:16)
+{"level":"verbose","time":"2026-11-23T14:02:19.482Z"}

@@ -11,12 +11,14 @@ Chaque plugin traite **un problème précis**, contient quelque chose qui s'exé
 | Plugin | Problème traité | Contenu |
 |---|---|---|
 | [**ops-doc**](plugins/ops-doc/README.md) | Une doc d'exploitation qui existe, est utilisable à 3 h du matin et reste alignée sur ce qui tourne | 5 skills (init, import, check, review), un script de vérification sans dépendance, un hook qui demande aux agents de vérifier et relire la doc avant commit et push |
+| [**kube-logs**](plugins/kube-logs/README.md) | Des logs exploitables sans rien gérer côté app : une ligne JSON sur stdout, et Alloy, Loki et Grafana font le reste | 5 skills (audit, setup, validate, query), un audit statique (code Node, Dockerfile, manifests, Alloy, Loki), un validateur des logs réels (stdin, kubectl, API Loki) utilisable en CI, une config pino éprouvée en prod |
 
 ## Installation
 
 ```
 /plugin marketplace add BEIRDINH0S/senior-claude
 /plugin install ops-doc@senior-claude
+/plugin install kube-logs@senior-claude
 ```
 
 On installe seulement les plugins qui nous intéressent. Chaque README de plugin décrit aussi une installation manuelle, sans le système de plugins.
