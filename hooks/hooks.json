@@ -1,0 +1,17 @@
+{
+  "description": "Bloque les git commit d'un agent qui touchent l'exploitation tant que la doc ops n'a pas été vérifiée et relue.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/agent_commit_gate.py\"",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
+  }
+}

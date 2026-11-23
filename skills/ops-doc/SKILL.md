@@ -54,6 +54,10 @@ Elles ne justifient pas un autre skill :
 
 Après chaque modification, relance le script de vérification.
 
+## Si un hook a bloqué ton commit ou ton push
+
+Le hook `ops-doc` bloque les `git commit` et `git push` qui touchent l'exploitation tant que la doc n'a pas été vérifiée pour cet état exact. Son message dit quoi faire : **ops-doc-check** limité au diff pour un commit, **ops-doc-review** sur les fichiers concernés pour un push. Fais le travail pour de vrai, mets la doc à jour, puis enregistre ton rapport avec la commande indiquée. L'enregistrement n'est là que pour éviter de refaire le travail quand rien n'a changé. Enregistrer sans avoir relu viderait le contrôle de son sens. Si tu penses que le blocage est un faux positif, dis-le à l'utilisateur plutôt que de le contourner.
+
 ## Règles qui valent pour tous les skills ops-doc
 
 - **Ne rien inventer.** Un chiffre (RTO, SLO, taille observée), un nom de responsable ou une justification de décision qu'on ne trouve ni dans le repo ni chez l'utilisateur devient un `TODO(ops-doc): <question précise>`. Une doc fausse est pire qu'une doc trouée, parce qu'on lui fait confiance pendant un incident.

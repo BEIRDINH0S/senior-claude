@@ -1,0 +1,8 @@
+- id: ops-doc-check
+  name: ops-doc - conformité de la doc d'exploitation
+  description: Vérifie docs/ (standard ops-doc) quand le commit touche la doc ou les manifests.
+  entry: skills/ops-doc/scripts/check_docs.py
+  args: ["."]
+  language: script
+  pass_filenames: false
+  files: ^(docs/|.*\.ya?ml$|(.*/)?Dockerfile[^/]*$)

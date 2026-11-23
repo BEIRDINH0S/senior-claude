@@ -17,9 +17,14 @@ skills/
 ├── ops-doc-import/
 ├── ops-doc-check/
 └── ops-doc-review/
+hooks/
+├── hooks.json           hook PreToolUse du plugin (commit/push des agents)
+├── agent_commit_gate.py logique du hook + commande `mark`
+└── git-pre-commit       hook git classique (script déterministe)
 tests/
 ├── fixture-repo/        faux repo avec des erreurs volontaires
-└── test_check_docs.py
+├── test_check_docs.py
+└── test_agent_gate.py   hook agent, sur des repos git temporaires
 ```
 
 ## Règles

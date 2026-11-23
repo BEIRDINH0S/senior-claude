@@ -90,6 +90,52 @@ ops-doc:
     - changes: [docs/**/*, "**/*.yaml"]
 ```
 
+## Garder la doc alignée : les hooks
+
+Une doc mise à jour à la release est fausse : on a oublié le pourquoi, et tout s'accumule. Il faut la mettre à jour **au moment du changement**, surtout quand c'est un agent qui modifie les manifests. Trois niveaux, du plus fin au plus large :
+
+| Moment | Qui | Quoi | Coût |
+|---|---|---|---|
+| `git commit` | agent Claude | **ops-doc-check** limité au diff : la doc est-elle encore vraie après ce que je viens de changer ? | léger : le contexte est frais, le périmètre petit |
+| `git push` | agent Claude | **ops-doc-review** sur ce qui part : la doc tient-elle à 3 h du matin ? | une fois par lot, sur un état cohérent |
+| commit (tous) / MR (CI) | tout le monde | `check_docs.py`, déterministe, sans IA | quelques secondes : c'est le filet de sécurité |
+
+**Pourquoi la review n'a pas lieu à chaque commit :** les commits intermédiaires (WIP, fixup, squash) ne survivent pas, et la qualité d'un runbook s'apprécie sur un changement complet. Relire à chaque commit, ce serait payer plusieurs fois pour des états jetables.
+
+### Hook agent (Claude Code)
+Il est livré avec le plugin (`hooks/hooks.json`) et s'active à l'installation. Il intercepte les `git commit` et `git push` de l'agent, et ne se déclenche que si :
+- le repo a adopté le standard (`docs/README.md` et `docs/runbooks/`) ;
+- des fichiers d'exploitation sont concernés (`docs/`, `*.yaml`, `Dockerfile*`, `.gitlab-ci.yml`).
+
+L'agent est alors bloqué avec la consigne de lancer le skill adapté et de mettre la doc à jour. Il enregistre ensuite son rapport (`agent_commit_gate.py mark commit|push --report …`). L'enregistrement est lié à l'**empreinte exacte** des changements : toute modification faite après coup oblige à recommencer.
+
+Installation manuelle sans le plugin, dans `~/.claude/settings.json` :
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      { "matcher": "Bash",
+        "hooks": [{ "type": "command", "command": "python3 /chemin/ops-doc-skills/hooks/agent_commit_gate.py", "timeout": 60 }] }
+    ]
+  }
+}
+```
+
+> Ce n'est pas un contrôle inviolable : un agent pourrait enregistrer une review sans la faire. C'est un rappel au bon moment, et la CI sert de filet de sécurité.
+
+### Hook git (tout le monde)
+```bash
+ln -s /chemin/ops-doc-skills/hooks/git-pre-commit .git/hooks/pre-commit
+```
+Ou avec le framework [pre-commit](https://pre-commit.com) :
+```yaml
+repos:
+  - repo: https://github.com/BEIRDINH0S/ops-doc-skills
+    rev: main
+    hooks:
+      - id: ops-doc-check
+```
+
 ## Contribuer
 
 Les contributions sont bienvenues : nouvelles règles, autres outils (Helm, Flux, Velero, Sealed Secrets…), traductions, retours d'expérience. Voir [CONTRIBUTING.md](CONTRIBUTING.md).

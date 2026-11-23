@@ -1,0 +1,17 @@
+#!/bin/sh
+# Hook git pre-commit ops-doc : vérification rapide et déterministe (sans IA).
+# Ne fait rien si le commit ne touche ni docs/ ni des fichiers d'exploitation.
+# Installation : ln -s /chemin/ops-doc-skills/hooks/git-pre-commit .git/hooks/pre-commit
+set -e
+root=$(git rev-parse --show-toplevel)
+[ -f "$root/docs/README.md" ] && [ -d "$root/docs/runbooks" ] || exit 0
+git diff --cached --name-only | grep -Eq '^docs/|\.ya?ml$|(^|/)Dockerfile[^/]*$' || exit 0
+
+here=$(dirname "$(readlink -f "$0" 2>/dev/null || realpath "$0")")
+check="$here/../skills/ops-doc/scripts/check_docs.py"
+if ! python3 "$check" "$root"; then
+  echo
+  echo "ops-doc : commit bloqué, la doc d'exploitation n'est pas conforme (voir ci-dessus)."
+  echo "Pour passer outre exceptionnellement : git commit --no-verify"
+  exit 1
+fi
