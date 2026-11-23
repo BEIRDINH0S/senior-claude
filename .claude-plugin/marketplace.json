@@ -1,6 +1,6 @@
 {
-  "name": "kube-ops-plugins",
-  "description": "Plugins Claude Code tirés de ma pratique d'une app Kubernetes en prod : doc d'exploitation, et d'autres à venir.",
+  "name": "senior-claude",
+  "description": "Plugins Claude Code tirés de ma pratique : bonnes pratiques de code et d'ops, encodées en skills, scripts et hooks.",
   "owner": {
     "name": "BEIRDINH0S",
     "url": "https://github.com/BEIRDINH0S"

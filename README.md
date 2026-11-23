@@ -1,10 +1,10 @@
-# kube-ops-plugins
+# senior-claude
 
-Des plugins [Claude Code](https://claude.com/claude-code) **tirés de ma pratique** : j'exploite une application en production sur Kubernetes, avec GitOps (GitLab + ArgoCD), PostgreSQL via CloudNativePG, et Prometheus, Loki et Grafana pour l'observabilité.
+Des plugins [Claude Code](https://claude.com/claude-code) pour que Claude travaille comme un ingénieur senior. Ils sont **tirés de ma pratique** du développement et de l'exploitation : une application en production sur Kubernetes, avec GitOps (GitLab + ArgoCD), PostgreSQL via CloudNativePG, et Prometheus, Loki et Grafana pour l'observabilité.
 
 Chaque plugin traite **un problème précis**, contient quelque chose qui s'exécute (skills, scripts, hooks), et s'installe seul.
 
-> *English: Claude Code plugins drawn from running a Kubernetes app in production (GitOps, CloudNativePG, Prometheus/Loki/Grafana). Written in French; translations welcome.*
+> *English: Claude Code plugins that make Claude work like a senior engineer, drawn from my own development and operations practice (Kubernetes, GitOps, CloudNativePG, Prometheus/Loki/Grafana). Written in French; translations welcome.*
 
 ## Plugins
 
@@ -15,8 +15,8 @@ Chaque plugin traite **un problème précis**, contient quelque chose qui s'exé
 ## Installation
 
 ```
-/plugin marketplace add BEIRDINH0S/kube-ops-plugins
-/plugin install ops-doc@kube-ops-plugins
+/plugin marketplace add BEIRDINH0S/senior-claude
+/plugin install ops-doc@senior-claude
 ```
 
 On installe seulement les plugins qui nous intéressent. Chaque README de plugin décrit aussi une installation manuelle, sans le système de plugins.

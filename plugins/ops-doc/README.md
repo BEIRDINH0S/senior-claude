@@ -51,15 +51,15 @@ Les principes :
 
 ### Comme plugin Claude Code
 ```
-/plugin marketplace add BEIRDINH0S/kube-ops-plugins
-/plugin install ops-doc@kube-ops-plugins
+/plugin marketplace add BEIRDINH0S/senior-claude
+/plugin install ops-doc@senior-claude
 ```
 
 ### À la main
 ```bash
-git clone https://github.com/BEIRDINH0S/kube-ops-plugins.git
+git clone https://github.com/BEIRDINH0S/senior-claude.git
 mkdir -p ~/.claude/skills
-for s in kube-ops-plugins/plugins/ops-doc/skills/*/; do ln -s "$PWD/$s" ~/.claude/skills/; done
+for s in senior-claude/plugins/ops-doc/skills/*/; do ln -s "$PWD/$s" ~/.claude/skills/; done
 ```
 Les skills doivent rester **côte à côte** : `ops-doc-init`, `-import`, `-check` et `-review` utilisent les ressources de `ops-doc` via `../ops-doc/`.
 
@@ -115,7 +115,7 @@ Installation manuelle sans le plugin, dans `~/.claude/settings.json` :
   "hooks": {
     "PreToolUse": [
       { "matcher": "Bash",
-        "hooks": [{ "type": "command", "command": "python3 /chemin/kube-ops-plugins/plugins/ops-doc/hooks/agent_commit_gate.py", "timeout": 60 }] }
+        "hooks": [{ "type": "command", "command": "python3 /chemin/senior-claude/plugins/ops-doc/hooks/agent_commit_gate.py", "timeout": 60 }] }
     ]
   }
 }
@@ -125,12 +125,12 @@ Installation manuelle sans le plugin, dans `~/.claude/settings.json` :
 
 ### Hook git (tout le monde)
 ```bash
-ln -s /chemin/kube-ops-plugins/plugins/ops-doc/hooks/git-pre-commit .git/hooks/pre-commit
+ln -s /chemin/senior-claude/plugins/ops-doc/hooks/git-pre-commit .git/hooks/pre-commit
 ```
 Ou avec le framework [pre-commit](https://pre-commit.com) :
 ```yaml
 repos:
-  - repo: https://github.com/BEIRDINH0S/kube-ops-plugins
+  - repo: https://github.com/BEIRDINH0S/senior-claude
     rev: main
     hooks:
       - id: ops-doc-check
