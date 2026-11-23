@@ -1,0 +1,16 @@
+name: tests
+on:
+  push:
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Tests du script de vérification
+        run: python -m unittest discover tests -v
+      - name: L'exemple de référence est conforme
+        run: python skills/ops-doc/scripts/check_docs.py skills/ops-doc/references/exemple-rdv --docs skills/ops-doc/references/exemple-rdv --manifests skills/ops-doc/references/exemple-rdv/adr

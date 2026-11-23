@@ -1,0 +1,27 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: rdv
+spec:
+  groups:
+    - name: rdv
+      rules:
+        - record: job:http_errors:rate5m
+          expr: sum(rate(http_requests_total{code=~"5.."}[5m]))
+        - alert: RdvApiDown
+          expr: sum(up{job="rdv-api"}) == 0
+          for: 2m
+          annotations:
+            runbook_url: https://gitlab.com/acme/rdv-gitops/-/blob/main/docs/runbooks/RdvApiDown.md
+        - alert: RdvHighErrorRate
+          expr: job:http_errors:rate5m > 0.05
+          annotations:
+            summary: trop de 5xx
+        - alert: RdvSlowRequests
+          expr: histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket[5m]))) > 0.5
+          annotations:
+            runbook_url: https://gitlab.com/acme/rdv-gitops/-/blob/main/docs/runbooks/RdvSlowRequests.md
+        - alert: KubePodCrashLooping
+          expr: max_over_time(kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff"}[5m]) >= 1
+          annotations:
+            runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubepodcrashlooping

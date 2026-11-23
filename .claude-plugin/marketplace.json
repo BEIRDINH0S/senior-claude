@@ -1,0 +1,15 @@
+{
+  "name": "ops-doc-skills",
+  "description": "Skills Claude Code pour la documentation d'exploitation d'apps Kubernetes : création, import, vérification et relecture.",
+  "owner": {
+    "name": "BEIRDINH0S",
+    "url": "https://github.com/BEIRDINH0S"
+  },
+  "plugins": [
+    {
+      "name": "ops-doc",
+      "source": "./",
+      "description": "Créer, importer, vérifier et relire la doc d'exploitation d'une app Kubernetes."
+    }
+  ]
+}

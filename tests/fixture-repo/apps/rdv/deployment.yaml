@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rdv-api
+spec:
+  template:
+    spec:
+      containers:
+        - name: api
+          image: registry.gitlab.com/acme/rdv-app:3f2a1c9
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: rdv-pg-app
+                  key: uri
+            - name: LOG_LEVEL
+              value: info
+            - name: FEATURE_FLAGS
+              value: "agenda-v2"
+            - name: STRIPE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: rdv-stripe
+                  key: key
+      volumes:
+        - name: certs
+          secret:
+            secretName: rdv-tls
