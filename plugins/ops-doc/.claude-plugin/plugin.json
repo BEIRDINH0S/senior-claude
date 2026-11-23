@@ -1,0 +1,22 @@
+{
+  "name": "ops-doc",
+  "version": "0.1.0",
+  "description": "Skills Claude Code pour créer, importer, vérifier et relire la documentation d'exploitation d'une app Kubernetes (runbooks, plan de reprise, ADR, post-mortems).",
+  "author": {
+    "name": "BEIRDINH0S",
+    "url": "https://github.com/BEIRDINH0S"
+  },
+  "homepage": "https://github.com/BEIRDINH0S/kube-ops-plugins/tree/main/plugins/ops-doc",
+  "repository": "https://github.com/BEIRDINH0S/kube-ops-plugins",
+  "license": "MIT",
+  "keywords": [
+    "documentation",
+    "runbooks",
+    "sre",
+    "kubernetes",
+    "devops",
+    "cloudnative-pg",
+    "argocd",
+    "on-call"
+  ]
+}

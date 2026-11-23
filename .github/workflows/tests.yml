@@ -10,7 +10,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Tests du script de vérification
-        run: python -m unittest discover tests -v
-      - name: L'exemple de référence est conforme
-        run: python skills/ops-doc/scripts/check_docs.py skills/ops-doc/references/exemple-rdv --docs skills/ops-doc/references/exemple-rdv --manifests skills/ops-doc/references/exemple-rdv/adr
+      - name: Tests de chaque plugin
+        run: |
+          set -e
+          for t in plugins/*/tests; do
+            echo "::group::$t"
+            python -m unittest discover -s "$t" -v
+            echo "::endgroup::"
+          done
+      - name: "ops-doc : l'exemple de référence est conforme"
+        run: |
+          E=plugins/ops-doc/skills/ops-doc/references/exemple-rdv
+          python plugins/ops-doc/skills/ops-doc/scripts/check_docs.py $E --docs $E --manifests $E/adr

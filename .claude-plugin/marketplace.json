@@ -1,6 +1,6 @@
 {
-  "name": "ops-doc-skills",
-  "description": "Skills Claude Code pour la documentation d'exploitation d'apps Kubernetes : création, import, vérification et relecture.",
+  "name": "kube-ops-plugins",
+  "description": "Plugins Claude Code tirés de ma pratique d'une app Kubernetes en prod : doc d'exploitation, et d'autres à venir.",
   "owner": {
     "name": "BEIRDINH0S",
     "url": "https://github.com/BEIRDINH0S"
@@ -8,8 +8,9 @@
   "plugins": [
     {
       "name": "ops-doc",
-      "source": "./",
-      "description": "Créer, importer, vérifier et relire la doc d'exploitation d'une app Kubernetes."
+      "source": "./plugins/ops-doc",
+      "description": "Créer, importer, vérifier et relire la doc d'exploitation d'une app Kubernetes, avec des hooks qui la gardent alignée sur les commits et pushs des agents.",
+      "category": "devops"
     }
   ]
 }

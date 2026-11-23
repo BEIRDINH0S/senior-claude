@@ -1,7 +1,7 @@
 #!/bin/sh
 # Hook git pre-commit ops-doc : vérification rapide et déterministe (sans IA).
 # Ne fait rien si le commit ne touche ni docs/ ni des fichiers d'exploitation.
-# Installation : ln -s /chemin/ops-doc-skills/hooks/git-pre-commit .git/hooks/pre-commit
+# Installation : ln -s /chemin/kube-ops-plugins/plugins/ops-doc/hooks/git-pre-commit .git/hooks/pre-commit
 set -e
 root=$(git rev-parse --show-toplevel)
 [ -f "$root/docs/README.md" ] && [ -d "$root/docs/runbooks" ] || exit 0
