@@ -13,6 +13,8 @@ Chaque plugin traite **un problème précis**, contient quelque chose qui s'exé
 | [**ops-doc**](plugins/ops-doc/README.md) | Une doc d'exploitation qui existe, est utilisable à 3 h du matin et reste alignée sur ce qui tourne | 5 skills (init, import, check, review), un script de vérification sans dépendance, un hook qui demande aux agents de vérifier et relire la doc avant commit et push |
 | [**kube-logs**](plugins/kube-logs/README.md) | Des logs exploitables sans rien gérer côté app : une ligne JSON sur stdout, et Alloy, Loki et Grafana font le reste | 5 skills (audit, setup, validate, query), un audit statique (code Node, Dockerfile, manifests, Alloy, Loki), un validateur des logs réels (stdin, kubectl, API Loki) utilisable en CI, une config pino éprouvée en prod |
 | [**grafana-dashboards**](plugins/grafana-dashboards/README.md) | Des dashboards qui servent à diagnostiquer, reliés aux alertes, aux runbooks et aux logs, au lieu du « mur de métriques » qu'une IA produit par défaut | 3 skills (design, check), un linter de JSON (schémas v1 et v2) utilisable en CI, un exemple de référence au schéma v2, le déploiement GitOps par le sidecar |
+| [**doc-screenshots**](plugins/doc-screenshots/README.md) | Des captures pour la doc annotées au pixel près (numéros, notes, flèches, floutage), au lieu de flèches « devinées » sur une image | capture.py + calque d'annotations injecté dans la page via agent-browser, placement automatique sans collision, recettes de capture régénérables |
+| [**recette**](plugins/recette/README.md) | Une recette qui décide d'une MEP sur des preuves : cas exécutables, anomalies qualifiées, go / no-go sur critères, PV avec réserves | 4 skills (plan, run, pv), un validateur du cahier de recette Markdown qui calcule le go / no-go et génère le PV |
 
 ## Installation
 
@@ -21,6 +23,8 @@ Chaque plugin traite **un problème précis**, contient quelque chose qui s'exé
 /plugin install ops-doc@senior-claude
 /plugin install kube-logs@senior-claude
 /plugin install grafana-dashboards@senior-claude
+/plugin install doc-screenshots@senior-claude
+/plugin install recette@senior-claude
 ```
 
 On installe seulement les plugins qui nous intéressent. Chaque README de plugin décrit aussi une installation manuelle, sans le système de plugins.

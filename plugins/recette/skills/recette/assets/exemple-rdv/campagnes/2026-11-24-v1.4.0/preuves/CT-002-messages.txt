@@ -1,0 +1,4 @@
+2026-11-25 10:12 build 1.4.0-rc3
+POST /api/login {"email":"praticien.recette@example.org","password":"***"} -> 401 {"message":"E-mail ou mot de passe incorrect"}
+POST /api/login {"email":"personne@example.org","password":"***"}          -> 401 {"message":"E-mail ou mot de passe incorrect"}
+Messages identiques : OK

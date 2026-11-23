@@ -1,0 +1,3 @@
+/admin/sms-log, horloge simulée 2026-11-23 18:00
+10 entrées « Rappel : rendez-vous demain 24/11 à HH:MM », horodatées 18:00:01 à 18:00:03
+Rendez-vous annulés (11:00 Hugo Bernard, 16:30 jeu fictif) : aucune entrée. -> OK

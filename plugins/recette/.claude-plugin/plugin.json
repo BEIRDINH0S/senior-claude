@@ -1,0 +1,10 @@
+{
+  "name": "recette",
+  "version": "0.1.0",
+  "description": "Recette avant mise en production : stratégie, exigences, cas de test exécutables, campagne avec preuves, anomalies qualifiées, go / no-go calculé sur des critères fixés à l'avance et PV de recette avec réserves. Cahier en Markdown, vérifié par script.",
+  "author": { "name": "BEIRDINH0S", "url": "https://github.com/BEIRDINH0S" },
+  "homepage": "https://github.com/BEIRDINH0S/senior-claude/tree/main/plugins/recette",
+  "repository": "https://github.com/BEIRDINH0S/senior-claude",
+  "license": "MIT",
+  "keywords": ["recette", "uat", "acceptance-testing", "test-cases", "qa", "go-no-go", "release"]
+}

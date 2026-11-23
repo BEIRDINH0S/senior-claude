@@ -1,0 +1,10 @@
+{
+  "name": "doc-screenshots",
+  "version": "0.1.0",
+  "description": "Captures d'écran annotées et reproductibles pour la doc avec agent-browser : étapes numérotées, notes, flèches, mise en lumière, floutage des données personnelles, recadrage — ancrées sur de vrais éléments, régénérables d'une commande.",
+  "author": { "name": "BEIRDINH0S", "url": "https://github.com/BEIRDINH0S" },
+  "homepage": "https://github.com/BEIRDINH0S/senior-claude/tree/main/plugins/doc-screenshots",
+  "repository": "https://github.com/BEIRDINH0S/senior-claude",
+  "license": "MIT",
+  "keywords": ["screenshots", "documentation", "agent-browser", "annotation", "technical-writing"]
+}

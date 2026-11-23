@@ -1,0 +1,3 @@
+/admin/sms-log consulté le 2026-11-24 à 14:31, après annulation du rendez-vous de 10:30 à 14:30
+Dernière entrée : 2026-11-24 09:02 (rappel d'un autre patient). Aucune entrée vers 06 55 44 33 22 après 14:30.
+Attendu : une entrée contenant « annulé » et « 24/11 à 10:30 ». -> KO (AN-001)

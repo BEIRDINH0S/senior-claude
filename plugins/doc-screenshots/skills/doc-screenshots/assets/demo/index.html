@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>rdv : agenda du jour</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.4 -apple-system, "Segoe UI", Roboto, sans-serif; color: #1f2937; background: #f3f4f6; }
+  header { height: 56px; background: #111827; color: #fff; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
+  header .brand { font-weight: 700; font-size: 18px; letter-spacing: .3px; }
+  header .user { display: flex; gap: 10px; align-items: center; font-size: 13px; color: #d1d5db; }
+  header .avatar { width: 30px; height: 30px; border-radius: 50%; background: #6366f1; display: grid; place-items: center; color: #fff; font-weight: 600; }
+  .layout { display: flex; min-height: calc(100vh - 56px); }
+  nav { width: 210px; background: #fff; border-right: 1px solid #e5e7eb; padding: 18px 12px; }
+  nav a { display: block; padding: 9px 12px; border-radius: 6px; color: #374151; text-decoration: none; margin-bottom: 2px; }
+  nav a.active { background: #eef2ff; color: #4338ca; font-weight: 600; }
+  main { flex: 1; padding: 28px 40px 28px 64px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .sub { color: #6b7280; margin-bottom: 18px; }
+  .toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
+  .toolbar input, .toolbar select { padding: 8px 10px; border: 1px solid #d1d5db; border-radius: 6px; background: #fff; font: inherit; }
+  .toolbar .spacer { flex: 1; }
+  .btn { padding: 9px 14px; border-radius: 6px; border: 1px solid #d1d5db; background: #fff; font: inherit; cursor: pointer; }
+  .btn.primary { background: #2563eb; border-color: #2563eb; color: #fff; font-weight: 600; }
+  .btn.danger { color: #b91c1c; border-color: #fecaca; background: #fff; padding: 5px 10px; font-size: 13px; }
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 18px; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 14px 16px; }
+  .card .k { color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: .4px; }
+  .card .v { font-size: 24px; font-weight: 700; margin-top: 4px; }
+  table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
+  th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .4px; color: #6b7280; background: #f9fafb; padding: 10px 14px; border-bottom: 1px solid #e5e7eb; }
+  td { padding: 11px 14px; border-bottom: 1px solid #f3f4f6; }
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+  .ok { background: #dcfce7; color: #166534; } .wait { background: #fef3c7; color: #92400e; } .no { background: #fee2e2; color: #991b1b; }
+</style>
+</head>
+<body>
+<header>
+  <span class="brand">rdv</span>
+  <span class="user"><span class="user-email">c.renaud@cabinet-exemple.fr</span><span class="avatar">CR</span></span>
+</header>
+<div class="layout">
+  <nav id="menu"><div id="menu-liens">
+    <a class="active" href="#">Agenda</a>
+    <a href="#">Patients</a>
+    <a href="#">Disponibilités</a>
+    <a href="#">Rappels SMS</a>
+    <a href="#">Paramètres</a>
+  </div></nav>
+  <main id="contenu">
+    <h1>Agenda du jour</h1>
+    <div class="sub">Mardi 24 novembre 2026 · Cabinet Exemple</div>
+    <div class="cards" id="indicateurs">
+      <div class="card"><div class="k">Rendez-vous</div><div class="v">12</div></div>
+      <div class="card"><div class="k">À confirmer</div><div class="v">3</div></div>
+      <div class="card"><div class="k">Créneaux libres</div><div class="v">5</div></div>
+    </div>
+    <div class="toolbar" id="barre">
+      <input id="date" type="date" value="2026-11-24">
+      <select id="praticien"><option>Tous les praticiens</option><option>Dr Martin</option></select>
+      <span class="spacer"></span>
+      <button class="btn">Exporter</button>
+      <button class="btn primary" id="nouveau">+ Nouveau rendez-vous</button>
+    </div>
+    <table id="agenda">
+      <thead><tr><th>Heure</th><th>Patient</th><th>Téléphone</th><th>Motif</th><th>Statut</th><th></th></tr></thead>
+      <tbody>
+        <tr><td>09:00</td><td class="pii">Jeanne Lefèvre</td><td class="pii">06 12 34 56 78</td><td>Consultation</td><td><span class="badge ok">Confirmé</span></td><td><button class="btn danger">Annuler</button></td></tr>
+        <tr><td>09:30</td><td class="pii">Paul Garnier</td><td class="pii">07 98 76 54 32</td><td>Suivi</td><td><span class="badge wait">À confirmer</span></td><td><button class="btn danger">Annuler</button></td></tr>
+        <tr id="rdv-1030"><td>10:30</td><td class="pii">Inès Moreau</td><td class="pii">06 55 44 33 22</td><td>Première visite</td><td><span class="badge ok">Confirmé</span></td><td><button class="btn danger" id="annuler-1030">Annuler</button></td></tr>
+        <tr><td>11:00</td><td class="pii">Hugo Bernard</td><td class="pii">06 11 22 33 44</td><td>Consultation</td><td><span class="badge no">Absent</span></td><td><button class="btn danger">Annuler</button></td></tr>
+        <tr><td>14:00</td><td class="pii">Léa Robin</td><td class="pii">07 66 77 88 99</td><td>Suivi</td><td><span class="badge ok">Confirmé</span></td><td><button class="btn danger">Annuler</button></td></tr>
+      </tbody>
+    </table>
+  </main>
+</div>
+</body>
+</html>

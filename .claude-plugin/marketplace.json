@@ -23,6 +23,18 @@
       "source": "./plugins/grafana-dashboards",
       "description": "Dashboards Grafana pour diagnostiquer : bandeau de santé + onglets, RED/USE, liens vers runbooks et logs, linter de JSON, GitOps.",
       "category": "devops"
+    },
+    {
+      "name": "doc-screenshots",
+      "source": "./plugins/doc-screenshots",
+      "description": "Captures d'écran annotées et reproductibles pour la doc avec agent-browser : étapes numérotées, notes, flèches, floutage, recadrage.",
+      "category": "productivity"
+    },
+    {
+      "name": "recette",
+      "source": "./plugins/recette",
+      "description": "Recette avant MEP : cas de test exécutables, preuves, anomalies qualifiées, go / no-go sur critères et PV de recette.",
+      "category": "devops"
     }
   ]
 }

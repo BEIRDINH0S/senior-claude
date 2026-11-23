@@ -1,0 +1,103 @@
+{
+  "defaults": {
+    "viewport": [
+      1440,
+      900,
+      2
+    ],
+    "session": "doc-demo",
+    "color_scheme": "light",
+    "style": {
+      "color": "#E5484D"
+    }
+  },
+  "captures": [
+    {
+      "name": "1-vue-ensemble",
+      "url": "http://localhost:8765/",
+      "wait": {
+        "selector": "#agenda"
+      },
+      "annotations": [
+        {
+          "selector": "#menu-liens",
+          "label": 1
+        },
+        {
+          "selector": "#indicateurs",
+          "label": 2
+        },
+        {
+          "selector": "#barre",
+          "label": 3
+        },
+        {
+          "selector": "#agenda",
+          "label": 4
+        },
+        {
+          "selector": ".user-email",
+          "type": "blur"
+        },
+        {
+          "selector": "#agenda td.pii",
+          "type": "blur"
+        }
+      ],
+      "crop": false,
+      "output": "../exemples/1-vue-ensemble.png"
+    },
+    {
+      "name": "2-creer-un-rendez-vous",
+      "url": "http://localhost:8765/",
+      "wait": {
+        "selector": "#barre"
+      },
+      "annotations": [
+        {
+          "selector": "#date",
+          "label": 1,
+          "note": "Choisir le jour"
+        },
+        {
+          "selector": "#praticien",
+          "label": 2
+        },
+        {
+          "selector": "#nouveau",
+          "label": 3,
+          "note": "Ouvre le formulaire"
+        }
+      ],
+      "crop": "#barre",
+      "output": "../exemples/2-creer-un-rendez-vous.png"
+    },
+    {
+      "name": "3-annuler-un-rendez-vous",
+      "url": "http://localhost:8765/",
+      "wait": {
+        "selector": "#agenda"
+      },
+      "annotations": [
+        {
+          "selector": "#rdv-1030",
+          "type": "spotlight"
+        },
+        {
+          "selector": "#annuler-1030",
+          "type": "arrow",
+          "note": "Annuler ce créneau : le patient reçoit un SMS",
+          "side": "left",
+          "distance": 120,
+          "frame": false
+        },
+        {
+          "selector": "#agenda td.pii",
+          "type": "blur"
+        }
+      ],
+      "crop": "#agenda",
+      "output": "../exemples/3-annuler-un-rendez-vous.png"
+    }
+  ]
+}
