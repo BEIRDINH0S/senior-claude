@@ -353,13 +353,57 @@ def yaml_files(roots, exclude: Path):
                     yield Path(dirpath) / f
 
 
+# Noms écrits en Helm : « {{ .Values.app.secret }} » est résolu dans le values.yaml du chart.
+HELM_VALUE = re.compile(r"^\{\{-?\s*\.Values\.([A-Za-z0-9_.]+)\s*-?\}\}$")
+SECRET_NAME = r"[\"']?(\{\{[^}]*\}\}|[a-z0-9][a-z0-9.-]*)[\"']?"
+
+
+def values_helm(f: Path, cache: dict) -> dict:
+    """Valeurs scalaires du values.yaml du chart contenant f, à plat : {"app.secret": "x"}."""
+    chart = next((d for d in f.parents if (d / "Chart.yaml").is_file()), None)
+    if chart is None:
+        return {}
+    if chart not in cache:
+        plat, pile = {}, []          # pile : [(indentation, clé)]
+        vf = chart / "values.yaml"
+        for line in (read(vf).splitlines() if vf.is_file() else []):
+            m = re.match(r"^(\s*)([A-Za-z0-9_-]+):\s*(.*?)\s*(#.*)?$", line)
+            if not m or line.lstrip().startswith("#"):
+                continue
+            ind, cle, val = len(m.group(1)), m.group(2), m.group(3)
+            while pile and pile[-1][0] >= ind:
+                pile.pop()
+            chemin = ".".join([k for _, k in pile] + [cle])
+            if val and not val.startswith(("{", "[", "|", ">")):
+                plat[chemin] = val.strip("\"'")
+            elif not val:
+                pile.append((ind, cle))
+        cache[chart] = plat
+    return cache[chart]
+
+
+def nom_reel(nom: str, f: Path, cache: dict):
+    """Un nom de ressource, Helm résolu ; None si on ne sait pas le résoudre."""
+    m = HELM_VALUE.match(nom)
+    if m:
+        return values_helm(f, cache).get(m.group(1))
+    return None if nom.startswith("{{") else nom
+
+
 def scan_manifests(roots, docs: Path):
     alerts = {}      # nom -> (fichier, ligne, runbook_url | None)
     env_vars = {}    # nom -> (fichier, ligne)
     secrets = {}     # nom -> (fichier, ligne)
+    cache = {}
     for f in yaml_files(roots, docs):
         lines = read(f).splitlines()
         cur = None
+
+        def secret(nom, ligne):
+            n = nom_reel(nom, f, cache)
+            if n:
+                secrets.setdefault(n, (str(f), ligne))
+
         for i, line in enumerate(lines):
             m = re.match(r"^\s*-\s*(alert|record):\s*[\"']?([A-Za-z0-9_:]+)", line)
             if m or line.startswith("---"):
@@ -374,21 +418,28 @@ def scan_manifests(roots, docs: Path):
                     fi, li, _ = alerts[cur]
                     alerts[cur] = (fi, li, u.group(1))
 
+            # Variable d'env, en bloc (« - name: X » puis value/valueFrom) ou compacte (« - { name: X, value: … } »).
             e = re.match(r"^\s*-\s*name:\s*[\"']?([A-Z_][A-Z0-9_]*)[\"']?\s*$", line)
             if e:
                 nxt = next((l for l in lines[i + 1:i + 3] if l.strip()), "")
                 if re.match(r"^\s*(value|valueFrom):", nxt):
                     env_vars.setdefault(e.group(1), (str(f), i + 1))
+            e = re.match(r"^\s*-\s*\{\s*name:\s*[\"']?([A-Z_][A-Z0-9_]*)[\"']?\s*,\s*(value|valueFrom)\s*:", line)
+            if e:
+                env_vars.setdefault(e.group(1), (str(f), i + 1))
 
+            # Secret référencé, en bloc ou compact (« secretKeyRef: { name: x, key: y } »).
             if re.match(r"^\s*(secretKeyRef|secretRef):\s*$", line):
                 for l in lines[i + 1:i + 4]:
-                    n = re.match(r"^\s*name:\s*[\"']?([a-z0-9][a-z0-9.-]*)[\"']?\s*$", l)
+                    n = re.match(r"^\s*name:\s*" + SECRET_NAME + r"\s*$", l)
                     if n:
-                        secrets.setdefault(n.group(1), (str(f), i + 1))
+                        secret(n.group(1), i + 1)
                         break
-            s = re.match(r"^\s*secretName:\s*[\"']?([a-z0-9][a-z0-9.-]*)[\"']?\s*$", line)
+            for n in re.finditer(r"(?:secretKeyRef|secretRef)\s*:\s*\{[^}]*?\bname\s*:\s*" + SECRET_NAME, line):
+                secret(n.group(1), i + 1)
+            s = re.match(r"^\s*secretName:\s*" + SECRET_NAME + r"\s*$", line)
             if s:
-                secrets.setdefault(s.group(1), (str(f), i + 1))
+                secret(s.group(1), i + 1)
     return alerts, env_vars, secrets
 
 

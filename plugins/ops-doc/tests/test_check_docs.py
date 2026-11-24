@@ -85,5 +85,15 @@ class FixtureAvecErreurs(unittest.TestCase):
         self.has("DATE-PERIMEE", "2025-01-10")
 
 
+class ManifestsHelm(unittest.TestCase):
+    """YAML compact et noms tirés des values : courant dans les charts Helm."""
+
+    def test_variables_et_secrets_d_un_chart(self):
+        _, env, secrets = check_docs.scan_manifests([ROOT / "tests" / "fixture-helm"], ROOT / "absent")
+        self.assertEqual(set(env), {"DATABASE_URL", "S3_ENDPOINT", "LOG_LEVEL", "JETON", "RPC", "INCONNU"})
+        # demo-api et demo-garage viennent de values.yaml ; un nom non résolu est ignoré, pas inventé.
+        self.assertEqual(set(secrets), {"demo-pg-app", "demo-api", "demo-garage"})
+
+
 if __name__ == "__main__":
     unittest.main()

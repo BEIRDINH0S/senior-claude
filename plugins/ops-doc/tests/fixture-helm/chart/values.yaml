@@ -1,0 +1,6 @@
+app:
+  # Secret créé hors du chart
+  secret: demo-api
+  logLevel: info
+garage:
+  secret: "demo-garage"
